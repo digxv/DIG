@@ -1,12 +1,12 @@
 const { expect } = require("chai");
 
 describe("Token Contract", () => {
-    let Token, token, ac1, ac2, acs;
+    let Token, token, owner, addr2, addrs;
 
     beforeEach(async () => {
         Token = await ethers.getContractFactory("DIGToken");
+        [owner, addr2, ...addrs] = await ethers.getSigners();
         token = await Token.deploy(10000000);
-        [ac1, ac2, ...acs] = await ethers.getSigners();
     });
 
     describe("Deployment", () => {
@@ -17,8 +17,23 @@ describe("Token Contract", () => {
             expect(address).to.be.not.undefined;
             expect(address).to.be.not.equal(0x0);
             expect(address).to.be.a("string");
-            expect(acs).to.not.undefined;
-            expect(acs).to.be.length.above(0);
+        })
+
+        it("admin balance", async () => {
+            const balance = await token.balanceOf(owner.address);
+            expect(balance).to.be.equal(10000000);
+        })
+
+        it("total supply", async () => {
+            expect(await token.totalSupply()).to.be.equal(10000000);
+        })
+
+        it("has a name", async () => {
+            expect(await token.name()).to.be.equal("Digvijay");
+        })
+
+        it("has a symbol", async () => {
+            expect(await token.symbol()).to.be.equal("DIG");
         })
     })
 });
