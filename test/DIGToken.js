@@ -6,7 +6,7 @@ describe("Token Contract", () => {
     beforeEach(async () => {
         Token = await ethers.getContractFactory("DIGToken");
         [owner, addr2, ...addrs] = await ethers.getSigners();
-        token = await Token.deploy(10000000);
+        token = await Token.deploy();
     });
 
     describe("Deployment", () => {
@@ -17,6 +17,11 @@ describe("Token Contract", () => {
             expect(address).to.be.not.undefined;
             expect(address).to.be.not.equal(0x0);
             expect(address).to.be.a("string");
+        })
+
+        it("admin address", async () => {
+            const admin = await token.admin();
+            expect(admin).to.be.equal(owner.address);
         })
 
         it("admin balance", async () => {
